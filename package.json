@@ -1,0 +1,29 @@
+{
+  "name": "easy-datetime",
+  "version": "0.0.1",
+  "description": "datetime util",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hellopao/easy-datetime"
+  },
+  "author": {
+    "name": "qinjia",
+    "email": "qinjia@outlook.com"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "datetime"
+  ],
+  "dependencies": {
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/hellopao/easy-datetime",
+  "_id": "easy-datetime@0.0.1",
+  "_from": "easy-datetime@"
+}
