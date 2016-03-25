@@ -1,6 +1,6 @@
 {
   "name": "easy-datetime",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "datetime util",
   "license": "MIT",
   "repository": {
@@ -15,15 +15,18 @@
     "node": ">=4.0.0"
   },
   "files": [
-    "index.js"
+    "./dist/datetime.js"
   ],
   "keywords": [
     "datetime"
   ],
-  "dependencies": {
-  },
-  "license": "MIT",
+  "dependencies": {},
   "homepage": "https://github.com/hellopao/easy-datetime",
-  "_id": "easy-datetime@0.0.1",
-  "_from": "easy-datetime@"
+  "_id": "easy-datetime@0.0.2",
+  "_from": "easy-datetime@",
+  "devDependencies": {
+    "ts-loader": "^0.8.1",
+    "typescript": "^1.9.0-dev.20160324",
+    "webpack": "^1.12.14"
+  }
 }
