@@ -1,6 +1,6 @@
 {
   "name": "easy-datetime",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "datetime util",
   "license": "MIT",
   "repository": {
@@ -14,18 +14,13 @@
   "engines": {
     "node": ">=4.0.0"
   },
-  "files": [
-    "./dist/datetime.js"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main":"./dist/datetime.js",
   "keywords": [
     "datetime"
   ],
   "dependencies": {},
   "homepage": "https://github.com/hellopao/easy-datetime",
-  "_id": "easy-datetime@0.0.4",
+  "_id": "easy-datetime@0.0.5",
   "_from": "easy-datetime@",
   "devDependencies": {
     "babel-core": "^6.7.4",
