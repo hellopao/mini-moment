@@ -17,5 +17,9 @@ a datetime util
     var tommorow = new DateTime().next('date');
     
     var yesterday = new DateTime().prev('date');
+    
+    var days = new DateTime().countDays();
+    
+    var str = DateTime.format('yyyy-MM-dd',new Date());
  
 ```
