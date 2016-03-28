@@ -5,8 +5,8 @@ const webpack = require('webpack');
 module.exports = {
     entry: "./src/index.ts",
     output: {
-        filename: "./dist/datetime.js",
-        library: "datetime",
+        filename: "./dist/moment.js",
+        library: "moment",
         libraryTarget: 'umd',
         umdNamedDefine: true
     },

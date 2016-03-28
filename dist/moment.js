@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("datetime", [], factory);
+		define("moment", [], factory);
 	else if(typeof exports === 'object')
-		exports["datetime"] = factory();
+		exports["moment"] = factory();
 	else
-		root["datetime"] = factory();
+		root["moment"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -69,43 +69,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return num;
 	};
 
-	var DateTime = function () {
-	    function DateTime(date) {
-	        _classCallCheck(this, DateTime);
+	var Moment = function () {
+	    function Moment(date) {
+	        _classCallCheck(this, Moment);
 
 	        this._setDate(date);
 	    }
 
-	    _createClass(DateTime, [{
-	        key: "_setDate",
-	        value: function _setDate(date) {
-	            date = date || Date.now();
-	            this.date = new Date(date);
-	            if (!this.date.getTime) {
-	                throw new Error('invalid date format');
-	            }
-	            return this;
-	        }
-	    }, {
+	    _createClass(Moment, [{
 	        key: "isToday",
 	        value: function isToday() {
-	            return DateTime.isToday(this.date);
+	            return Moment.isToday(this.date);
 	        }
 	    }, {
 	        key: "countDays",
 	        value: function countDays() {
-	            return DateTime.countDays(this.date);
+	            return Moment.countDays(this.date);
 	        }
 	    }, {
 	        key: "get",
 	        value: function get(type) {
-	            return DateTime.get(type, this.date);
+	            return Moment.get(type, this.date);
+	        }
+	    }, {
+	        key: "set",
+	        value: function set(type, value) {
+	            if (value < 0 || Math.ceil(value) !== value) {
+	                throw new Error("the argument value must be a number greater than or equal to 0");
+	            }
+	            var types = Object.keys(constVlaues.DATE_TYPES);
+	            if (types.indexOf(type) === -1) {
+	                throw new Error("the argument type must be one of " + types);
+	            }
+	            if (["year", "month", "week", "date"].indexOf(type) > -1 && value === 0) {
+	                throw new Error("the argument value must be an positive integer for type " + type);
+	            }
+	            var dtype = constVlaues.DATE_TYPES[type];
+	            if (type === "week") {
+	                value = (value - 1) * 7;
+	            }
+	            this._setDate(this.date[dtype['set']](value));
+	            return this;
 	        }
 	    }, {
 	        key: "format",
 	        value: function format(formats) {
 	            formats = formats || "yyyy-MM-dd";
-	            return DateTime.format(formats, this.date);
+	            return Moment.format(formats, this.date);
 	        }
 	    }, {
 	        key: "fromNow",
@@ -113,28 +123,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var now = new Date();
 	            var delta = now.getTime() - this.date.getTime();
 	            var deltaStr = delta > 0 ? "前" : "后";
+	            delta = Math.abs(delta);
 	            var year = Math.floor(delta / (constVlaues.DAY * 365));
-	            if (Math.abs(year) > 1 && now.getFullYear() !== this.date.getFullYear()) {
+	            if (year >= 1 && now.getFullYear() !== this.date.getFullYear()) {
 	                return year + "年" + deltaStr;
 	            }
 	            var month = Math.floor(delta / (constVlaues.DAY * 30));
-	            if (Math.abs(month) > 1 && now.getMonth() !== this.date.getMonth()) {
+	            if (month >= 1 && now.getMonth() !== this.date.getMonth()) {
 	                return month + "月" + deltaStr;
 	            }
 	            var day = Math.floor(delta / constVlaues.DAY);
-	            if (Math.abs(day) > 1) {
+	            if (day >= 1) {
 	                return day + "天" + deltaStr;
 	            }
 	            var hour = Math.floor(delta * 24 / constVlaues.DAY);
-	            if (Math.abs(hour) > 1) {
+	            if (hour >= 1) {
 	                return hour + "小时" + deltaStr;
 	            }
 	            var minute = Math.floor(delta * 24 * 60 / constVlaues.DAY);
-	            if (Math.abs(minute) > 1) {
+	            if (minute >= 1) {
 	                return minute + "分钟" + deltaStr;
 	            }
 	            var second = delta * 24 * 60 * 60 / constVlaues.DAY;
-	            if (Math.abs(second) > 1) {
+	            if (second >= 1) {
 	                return second + "秒" + deltaStr;
 	            }
 	        }
@@ -156,6 +167,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	                throw new Error('argument delta must be a number');
 	            }
 	            this._adjacent(type, -1 * delta);
+	            return this;
+	        }
+	    }, {
+	        key: "startOf",
+	        value: function startOf(type) {
+	            if (type === "year") {
+	                this._setDate(this.format('yyyy/01/01'));
+	            } else if (type === "month") {
+	                this._setDate(this.format('yyyy/MM/01'));
+	            } else if (type === "season") {
+	                this._setDate(this.format("yyyy/" + (Math.floor((+this.get('month') - 1) / 3) * 3 + 1) + "/01"));
+	            } else if (type === "week") {
+	                this._setDate(this.prev("date", +this.get('day')).format('yyyy/MM/dd'));
+	            } else if (type === "date") {
+	                this._setDate(this.format('yyyy/MM/dd 00:00'));
+	            } else if (type === "hour") {
+	                this._setDate(this.format('yyyy/MM/dd hh:00'));
+	            } else if (type === "minute") {
+	                this._setDate(this.format('yyyy/MM/dd hh:mm:00'));
+	            }
+	            return this;
+	        }
+	    }, {
+	        key: "_setDate",
+	        value: function _setDate(date) {
+	            date = date || Date.now();
+	            this.date = new Date(date);
+	            if (!this.date.getTime) {
+	                throw new Error('invalid date format');
+	            }
 	            return this;
 	        }
 	    }, {
@@ -204,7 +245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (types.indexOf(type) === -1) {
 	                throw new Error("the argument type must be one of " + types);
 	            }
-	            return DateTime.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
+	            return Moment.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
 	        }
 	    }, {
 	        key: "format",
@@ -217,11 +258,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }]);
 
-	    return DateTime;
+	    return Moment;
 	}();
 
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = DateTime;
+	exports.default = Moment;
 
 /***/ },
 /* 1 */

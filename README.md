@@ -1,25 +1,26 @@
-## easy-datetime
-a datetime util 
+## mini-moment
+
+a Moment util 
 
 ### usage
 
 ```bash
-    npm install easy-datetime
+    npm install mini-moment
 ```
 
 ### example
 
 ```javascript
-    var DateTime = require('easy-datetime');
+    var Moment = require('mini-moment');
     
-    var dateStr = new DateTime().format();
+    var dateStr = new Moment().format();
     
-    var tommorow = new DateTime().next('date');
+    var tommorow = new Moment().next('date');
     
-    var yesterday = new DateTime().prev('date');
+    var yesterday = new Moment().prev('date');
     
-    var days = new DateTime().countDays();
+    var days = new Moment().countDays();
     
-    var str = DateTime.format('yyyy-MM-dd',new Date());
+    var str = Moment.format('yyyy-MM-dd',new Date());
  
 ```

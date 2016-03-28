@@ -1,27 +1,29 @@
 {
-  "name": "easy-datetime",
-  "version": "0.0.5",
-  "description": "datetime util",
+  "name": "mini-moment",
+  "version": "0.0.1",
+  "description": "a datetime util",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hellopao/easy-datetime"
+    "url": "https://github.com/hellopao/mini-moment"
   },
   "author": {
     "name": "qinjia",
     "email": "qinjia@outlook.com"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": "*"
   },
-  "main":"./dist/datetime.js",
+  "main":"./dist/moment.js",
   "keywords": [
-    "datetime"
+    "miniMoment",
+    "date",
+    "time"
   ],
   "dependencies": {},
-  "homepage": "https://github.com/hellopao/easy-datetime",
-  "_id": "easy-datetime@0.0.5",
-  "_from": "easy-datetime@",
+  "homepage": "https://github.com/hellopao/mini-moment",
+  "_id": "mini-moment@0.0.1",
+  "_from": "mini-moment@",
   "devDependencies": {
     "babel-core": "^6.7.4",
     "babel-loader": "^6.2.4",

@@ -7,47 +7,60 @@ var padZero = function (num) {
     }
     return num;
 };
-var DateTime = (function () {
-    function DateTime(date) {
+var Moment = (function () {
+    function Moment(date) {
         this._setDate(date);
     }
-    DateTime.prototype._setDate = function (date) {
-        date = date || Date.now();
-        this.date = new Date(date);
-        if (!this.date.getTime) {
-            throw new Error('invalid date format');
-        }
-        return this;
-    };
     /**
      * compare the date with today
      */
-    DateTime.prototype.isToday = function () {
-        return DateTime.isToday(this.date);
+    Moment.prototype.isToday = function () {
+        return Moment.isToday(this.date);
     };
     /**
      * count days in month
      */
-    DateTime.prototype.countDays = function () {
-        return DateTime.countDays(this.date);
+    Moment.prototype.countDays = function () {
+        return Moment.countDays(this.date);
     };
     /**
      * get datestr by type
      */
-    DateTime.prototype.get = function (type) {
-        return DateTime.get(type, this.date);
+    Moment.prototype.get = function (type) {
+        return Moment.get(type, this.date);
+    };
+    /**
+     * get datestr by type
+     */
+    Moment.prototype.set = function (type, value) {
+        if (value < 0 || Math.ceil(value) !== value) {
+            throw new Error("the argument value must be a number greater than or equal to 0");
+        }
+        var types = Object.keys(constVlaues.DATE_TYPES);
+        if (types.indexOf(type) === -1) {
+            throw new Error("the argument type must be one of " + types);
+        }
+        if (["year", "month", "week", "date"].indexOf(type) > -1 && value === 0) {
+            throw new Error("the argument value must be an positive integer for type " + type);
+        }
+        var dtype = constVlaues.DATE_TYPES[type];
+        if (type === "week") {
+            value = (value - 1) * 7;
+        }
+        this._setDate(this.date[dtype['set']](value));
+        return this;
     };
     /**
      * format date
      */
-    DateTime.prototype.format = function (formats) {
+    Moment.prototype.format = function (formats) {
         formats = formats || "yyyy-MM-dd";
-        return DateTime.format(formats, this.date);
+        return Moment.format(formats, this.date);
     };
     /**
      * static func : compare the date with today
      */
-    DateTime.isToday = function (date) {
+    Moment.isToday = function (date) {
         date = new Date(date);
         var now = new Date();
         return date.getFullYear() === now.getFullYear()
@@ -57,7 +70,7 @@ var DateTime = (function () {
     /**
      * sttic func : count days in month
      */
-    DateTime.countDays = function (date) {
+    Moment.countDays = function (date) {
         date = new Date(date);
         var stime = new Date(date.getTime()).setDate(1);
         var start = new Date(stime);
@@ -67,17 +80,17 @@ var DateTime = (function () {
     /**
      * static func : get datestr by type
      */
-    DateTime.get = function (type, date) {
+    Moment.get = function (type, date) {
         var types = Object.keys(constVlaues.FORMATS_MAP);
         if (types.indexOf(type) === -1) {
             throw new Error("the argument type must be one of " + types);
         }
-        return DateTime.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
+        return Moment.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
     };
     /**
      * static func : format date
      */
-    DateTime.format = function (formats, date) {
+    Moment.format = function (formats, date) {
         if (typeof formats !== "string") {
             throw new Error('argument formats must be a string');
         }
@@ -93,39 +106,40 @@ var DateTime = (function () {
     /**
      * cal delta time str from now
      */
-    DateTime.prototype.fromNow = function () {
+    Moment.prototype.fromNow = function () {
         var now = new Date();
         var delta = now.getTime() - this.date.getTime();
         var deltaStr = delta > 0 ? "前" : "后";
+        delta = Math.abs(delta);
         var year = Math.floor(delta / (constVlaues.DAY * 365));
-        if (Math.abs(year) > 1 && now.getFullYear() !== this.date.getFullYear()) {
+        if (year >= 1 && now.getFullYear() !== this.date.getFullYear()) {
             return year + "\u5E74" + deltaStr;
         }
         var month = Math.floor(delta / (constVlaues.DAY * 30));
-        if (Math.abs(month) > 1 && now.getMonth() !== this.date.getMonth()) {
+        if (month >= 1 && now.getMonth() !== this.date.getMonth()) {
             return month + "\u6708" + deltaStr;
         }
         var day = Math.floor(delta / constVlaues.DAY);
-        if (Math.abs(day) > 1) {
+        if (day >= 1) {
             return day + "\u5929" + deltaStr;
         }
         var hour = Math.floor(delta * 24 / constVlaues.DAY);
-        if (Math.abs(hour) > 1) {
+        if (hour >= 1) {
             return hour + "\u5C0F\u65F6" + deltaStr;
         }
         var minute = Math.floor(delta * 24 * 60 / constVlaues.DAY);
-        if (Math.abs(minute) > 1) {
+        if (minute >= 1) {
             return minute + "\u5206\u949F" + deltaStr;
         }
         var second = delta * 24 * 60 * 60 / constVlaues.DAY;
-        if (Math.abs(second) > 1) {
+        if (second >= 1) {
             return second + "\u79D2" + deltaStr;
         }
     };
     /**
      * get next date
      */
-    DateTime.prototype.next = function (type, delta) {
+    Moment.prototype.next = function (type, delta) {
         delta = delta || 1;
         if (typeof delta !== "number") {
             throw new Error('argument delta must be a number');
@@ -136,7 +150,7 @@ var DateTime = (function () {
     /**
      * get prev date
      */
-    DateTime.prototype.prev = function (type, delta) {
+    Moment.prototype.prev = function (type, delta) {
         delta = delta || 1;
         if (typeof delta !== "number") {
             throw new Error('argument delta must be a number');
@@ -144,7 +158,42 @@ var DateTime = (function () {
         this._adjacent(type, -1 * delta);
         return this;
     };
-    DateTime.prototype._adjacent = function (type, delta) {
+    /**
+     * first of the time unit
+     */
+    Moment.prototype.startOf = function (type) {
+        if (type === "year") {
+            this._setDate(this.format('yyyy/01/01'));
+        }
+        else if (type === "month") {
+            this._setDate(this.format('yyyy/MM/01'));
+        }
+        else if (type === "season") {
+            this._setDate(this.format("yyyy/" + (Math.floor((+this.get('month') - 1) / 3) * 3 + 1) + "/01"));
+        }
+        else if (type === "week") {
+            this._setDate(this.prev("date", +this.get('day')).format('yyyy/MM/dd'));
+        }
+        else if (type === "date") {
+            this._setDate(this.format('yyyy/MM/dd 00:00'));
+        }
+        else if (type === "hour") {
+            this._setDate(this.format('yyyy/MM/dd hh:00'));
+        }
+        else if (type === "minute") {
+            this._setDate(this.format('yyyy/MM/dd hh:mm:00'));
+        }
+        return this;
+    };
+    Moment.prototype._setDate = function (date) {
+        date = date || Date.now();
+        this.date = new Date(date);
+        if (!this.date.getTime) {
+            throw new Error('invalid date format');
+        }
+        return this;
+    };
+    Moment.prototype._adjacent = function (type, delta) {
         var types = Object.keys(constVlaues.DATE_TYPES);
         if (types.indexOf(type) === -1) {
             throw new Error("the argument type must be one of " + types);
@@ -155,14 +204,14 @@ var DateTime = (function () {
         }
         this._setDate(this.date[dtype['set']](this.date[dtype['get']]() + delta));
     };
-    DateTime.prototype.valueOf = function () {
+    Moment.prototype.valueOf = function () {
         return +this.date;
     };
-    DateTime.prototype.toString = function () {
+    Moment.prototype.toString = function () {
         return this.date.toString();
     };
-    return DateTime;
+    return Moment;
 }());
 exports.__esModule = true;
-exports["default"] = DateTime;
+exports["default"] = Moment;
 //# sourceMappingURL=index.js.map
