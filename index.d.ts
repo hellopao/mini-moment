@@ -16,7 +16,7 @@ export class Moment {
     /**
      * Mutates the original moment by setting it to a unit of the incoming time
      */
-    set(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "week", delta?: number): Moment;
+    set(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "week", value: number): Moment;
 
     /**
      * Mutates the original moment by adding time
