@@ -1,6 +1,6 @@
 {
   "name": "mini-moment",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a datetime util",
   "license": "MIT",
   "repository": {
@@ -26,7 +26,7 @@
   },
   "dependencies": {},
   "homepage": "https://github.com/hellopao/mini-moment",
-  "_id": "mini-moment@0.0.3",
+  "_id": "mini-moment@0.0.4",
   "_from": "mini-moment@",
   "devDependencies": {
     "ava": "^0.13.0",

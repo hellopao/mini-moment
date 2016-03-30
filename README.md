@@ -21,6 +21,6 @@ a Moment util
     
     var days = new Moment().countDays();
     
-    var str = Moment.format('yyyy-MM-dd',new Date());
+    var str = Moment.format(new Date());
  
 ```
