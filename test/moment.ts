@@ -1,51 +1,107 @@
 "use strict";
 
+import test from "ava";
+
 import Moment from "../src/";
 
-const date = new Moment().get('date');
-console.log(date);
+test('Moment is not a function', t => {
+    t.throws(() => Moment());
+    t.notThrows(() => new Moment());
+});
 
-const day = new Moment().get('day');
-console.log(day);
+test('new Moment().get', t => {
+    const now = new Date();
+    t.throws(() => new Moment().get('dfsdfsd'));
+    t.is(now.getFullYear(), +new Moment().get('year'));
+    t.is(now.getMonth() + 1, +new Moment().get('month'));
+    t.is(now.getDate(), +new Moment().get('date'));
+    t.is(now.getHours(), +new Moment().get('hour'));
+    t.is(now.getMinutes(), +new Moment().get('minute'));
+});
 
-const cur = Moment.format('yyyy-MM-dd hh:mm:ss',new Date())
-console.log(cur);
+test('Moment.get', t => {
+    const now = new Date();
+    t.throws(() => Moment.get('dfsdfsd',now));
+    t.is(now.getFullYear(), +Moment.get('year',now));
+    t.is(now.getMonth() + 1, +Moment.get('month',now));
+    t.is(now.getDate(), +Moment.get('date',now));
+    t.is(now.getHours(), +Moment.get('hour',now));
+    t.is(now.getMinutes(), +Moment.get('minute',now));
+});
 
-const last = new Moment().prev('month').format();
-console.log(last);
+test('new Moment().set', t => {
+    const now = new Date();
+    t.throws(() => new Moment().set('dsfsd',1));
+    t.is(new Moment(now).set('date',1).date.getTime(),new Date(now.getTime()).setDate(1));
+    t.is(new Moment(now).set('month',1).date.getTime(),new Date(now.getTime()).setMonth(1));
+    t.is(new Moment(now).set('year',1).date.getTime(),new Date(now.getTime()).setFullYear(1));
+});
 
-const prev = new Moment().prev('month').fromNow();
-console.log(prev);
+test('new Moment().format', t => {
+    t.is('2016-03-30',new Moment('2016/03/30').format());    
+    t.not('2016-03-30',new Moment('2016/03/31').format());    
+    t.is('2016-03-30',new Moment('2016/03/30').format('yyyy-MM-dd')); 
+    t.not('2016-03-30',new Moment('2016/03/31').format('yyyy-MM-dd')); 
+});
 
-console.log(new Moment().prev('year').next('month').format());
+test('Moment.format', t => {
+    t.is('2016-03-30', Moment.format('2016/03/30'));    
+    t.not('2016-03-30', Moment.format('2016/03/31'));    
+    t.is('2016-03-30', Moment.format('2016/03/30')); 
+    t.not('2016-03-30', Moment.format('2016/03/31')); 
+});
 
-console.log(new Moment().prev('year').prev('month').countDays())
+test('new Moment().fromNow', t => {
+    t.is('1小时前', new Moment().prev('hour').fromNow());
+    t.is('1年前', new Moment().prev('year').fromNow());
+    t.is('1月前', new Moment().prev('date',31).fromNow());
+});
 
-console.log(new Moment().prev('month').next('month').next('date').isToday())
+test('new Moment().startOf', t => {
+    t.is('2016-03-01', new Moment('2016/3/30').startOf('month').format());
+    t.is('2016-01-01', new Moment('2016/3/30').startOf('year').format());
+    t.is('2016-01-01', new Moment('2016/3/30').startOf('season').format());
+});
 
-const next = new Moment().next('month').next('date',2).fromNow();
-console.log(next);
+test('new Moment().countDays', t => {
+    t.is(29, new Moment('2016/02/01').countDays());
+    t.is(28, new Moment('2015/02/01').countDays());
+});
 
-const startOfYear = new Moment().startOf('year');
-console.log(startOfYear);
+test('Moment.countDays', t => {
+    t.is(29, Moment.countDays('2016/02/01'));
+    t.is(28, Moment.countDays('2015/02/01'));
+});
 
-const startOfSeason = new Moment().next('month').startOf('season');
-console.log(startOfSeason);
+test('new Moment().next', t => {
+    t.is('2016-03-31', new Moment('2016/03/30').next('date').format());
+    t.is('2016-04-01', new Moment('2016/03/30').next('date',2).format());
+    t.is('2016-04-30', new Moment('2016/03/30').next('month').format());
+    t.is('2016-05-01', new Moment('2016/03/31').next('month').format());
+    t.is('2017-03-01', new Moment('2016/02/29').next('year').format());
+    t.is('2017-02-28', new Moment('2016/02/28').next('year').format());
+});
 
-const startOfMonth = new Moment().startOf('month');
-console.log(startOfMonth);
+test('new Moment().prev', t => {
+    t.is('2016-03-29', new Moment('2016/03/30').prev('date').format());
+    t.is('2016-03-28', new Moment('2016/03/30').prev('date',2).format());
+    t.is('2016-03-01', new Moment('2016/03/30').prev('month').format());
+    t.is('2015-03-01', new Moment('2016/02/29').prev('year').format());
+    t.is('2015-02-28', new Moment('2016/02/28').prev('year').format());
+});
 
-const startOfWeek = new Moment().startOf('week');
-console.log(startOfWeek);
+test('new Moment().isToday', t => {
+    const now = new Date();
+    t.is(true,new Moment(now).isToday());
+});
 
-const startOfDay = new Moment().startOf('date');
-console.log(startOfDay);
+test('Moment.isToday', t => {
+    const now = new Date();
+    t.is(true,Moment.isToday(now));
+});
 
-const startOfHour = new Moment().startOf('hour');
-console.log(startOfHour);
-
-const startOfMinute = new Moment().startOf('minute');
-console.log(startOfMinute);
-
-const settingDate = new Moment().set('year',1999).format();
-console.log(settingDate);
+test('Moment.isValid', t => {
+    t.is(false, Moment.isValid('2016/03/30'));
+    t.is(true, Moment.isValid('dsfwerwerwe'));
+    t.is(true, Moment.isValid());
+});

@@ -2,6 +2,9 @@
 
 import * as constVlaues from "./constants";
 
+type DateType = number | string | Date;
+type DateUnit = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
+
 const padZero = function (num) {
     num = "" + num;
     if (/^[0-9]$/.test(num)) {
@@ -15,7 +18,7 @@ export default class Moment {
 
     date: Date;
 
-    constructor(date?: string | number) {
+    constructor(date?: string | number | Date) {
         this._setDate(date);
     }
 
@@ -36,36 +39,36 @@ export default class Moment {
     /**
      * get datestr by type
      */
-    get(type:string): string {
+    get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day"): string {
         return Moment.get(type, this.date);
     }
-    
+
     /**
      * get datestr by type
      */
-    set(type:string, value: number): Moment {
+    set(type: DateUnit, value: number): Moment {
         if (value < 0 || Math.ceil(value) !== value) {
             throw new Error(`the argument value must be a number greater than or equal to 0`);
         }
-        
+
         const types = Object.keys(constVlaues.DATE_TYPES);
 
         if (types.indexOf(type) === -1) {
             throw new Error(`the argument type must be one of ${types}`);
         }
-        
-        if (["year","month","week","date"].indexOf(type) > -1 && value === 0) {
+
+        if (["year", "month", "week", "date"].indexOf(type) > -1 && value === 0) {
             throw new Error(`the argument value must be an positive integer for type ${type}`);
         }
-        
+
         const dtype = constVlaues.DATE_TYPES[type];
 
         if (type === "week") {
-            value = (value - 1) * 7;    
+            value = (value - 1) * 7;
         }
-        
+
         this._setDate(this.date[dtype['set']](value));
-        
+
         return this;
     }
 
@@ -73,8 +76,7 @@ export default class Moment {
      * format date
      */
     format(formats?: string): string {
-        formats = formats || "yyyy-MM-dd";
-        return Moment.format(formats, this.date);
+        return Moment.format(this.date, formats);
     }
 
     /**
@@ -106,25 +108,22 @@ export default class Moment {
     /**
      * static func : get datestr by type
      */
-    static get(type, date): string {
+    static get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day", date): string {
         const types = Object.keys(constVlaues.FORMATS_MAP);
 
         if (types.indexOf(type) === -1) {
             throw new Error(`the argument type must be one of ${types}`);
         }
 
-        return Moment.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
+        return Moment.format(date, constVlaues.FORMATS_MAP[type]).replace(/^0/, '');
     }
-    
+
     /**
      * static func : format date
      */
-    static format(formats, date): string {
-        if (typeof formats !== "string") {
-            throw new Error('argument formats must be a string');
-        }
-
+    static format(date, formats?: string): string {
         date = new Date(date);
+        formats = formats || "yyyy-MM-dd";
 
         return formats.replace(/[yY]{4}/, date.getFullYear())
             .replace(/M{2}/, padZero(date.getMonth() + 1))
@@ -133,6 +132,13 @@ export default class Moment {
             .replace(/m{2}/, padZero(date.getMinutes()))
             .replace(/s{2}/, padZero(date.getSeconds()))
             .replace(/w/, constVlaues.WEEKS[date.getDay()])
+    }
+
+    /**
+     * validate a date
+     */
+    static isValid(date?: any) {
+        return isNaN(new Date(date).getTime());
     }
 
     /**
@@ -178,7 +184,7 @@ export default class Moment {
     /**
      * get next date
      */
-    next(type: string, delta?: number): Moment {
+    next(type: DateUnit, delta?: number): Moment {
         delta = delta || 1;
 
         if (typeof delta !== "number") {
@@ -193,7 +199,7 @@ export default class Moment {
     /**
      * get prev date
      */
-    prev(type: string, delta?: number): Moment {
+    prev(type: DateUnit, delta?: number): Moment {
         delta = delta || 1;
 
         if (typeof delta !== "number") {
@@ -204,11 +210,11 @@ export default class Moment {
 
         return this;
     }
-    
+
     /**
      * first of the time unit
      */
-    startOf(type: string): Moment {
+    startOf(type: "year" | "season" | "month" | "week" | "date" | "hour" | "minute"): Moment {
         if (type === "year") {
             this._setDate(this.format('yyyy/01/01'));
         } else if (type === "month") {
@@ -216,7 +222,7 @@ export default class Moment {
         } else if (type === "season") {
             this._setDate(this.format(`yyyy/${Math.floor((+this.get('month') - 1) / 3) * 3 + 1}/01`));
         } else if (type === "week") {
-            this._setDate(this.prev("date",+this.get('day')).format('yyyy/MM/dd'));
+            this._setDate(this.prev("date", +this.get('day')).format('yyyy/MM/dd'));
         } else if (type === "date") {
             this._setDate(this.format('yyyy/MM/dd 00:00'));
         } else if (type === "hour") {
@@ -229,10 +235,9 @@ export default class Moment {
 
     _setDate(date?): Moment {
         date = date || Date.now();
-
         this.date = new Date(date);
 
-        if (!this.date.getTime) {
+        if (Moment.isValid(this.date)) {
             throw new Error('invalid date format');
         }
         return this;
@@ -262,3 +267,4 @@ export default class Moment {
         return this.date.toString();
     }
 }
+

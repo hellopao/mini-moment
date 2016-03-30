@@ -54,8 +54,7 @@ var Moment = (function () {
      * format date
      */
     Moment.prototype.format = function (formats) {
-        formats = formats || "yyyy-MM-dd";
-        return Moment.format(formats, this.date);
+        return Moment.format(this.date, formats);
     };
     /**
      * static func : compare the date with today
@@ -85,16 +84,14 @@ var Moment = (function () {
         if (types.indexOf(type) === -1) {
             throw new Error("the argument type must be one of " + types);
         }
-        return Moment.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
+        return Moment.format(date, constVlaues.FORMATS_MAP[type]).replace(/^0/, '');
     };
     /**
      * static func : format date
      */
-    Moment.format = function (formats, date) {
-        if (typeof formats !== "string") {
-            throw new Error('argument formats must be a string');
-        }
+    Moment.format = function (date, formats) {
         date = new Date(date);
+        formats = formats || "yyyy-MM-dd";
         return formats.replace(/[yY]{4}/, date.getFullYear())
             .replace(/M{2}/, padZero(date.getMonth() + 1))
             .replace(/d{2}/, padZero(date.getDate()))
@@ -102,6 +99,12 @@ var Moment = (function () {
             .replace(/m{2}/, padZero(date.getMinutes()))
             .replace(/s{2}/, padZero(date.getSeconds()))
             .replace(/w/, constVlaues.WEEKS[date.getDay()]);
+    };
+    /**
+     * validate a date
+     */
+    Moment.isValid = function (date) {
+        return isNaN(new Date(date).getTime());
     };
     /**
      * cal delta time str from now
@@ -188,7 +191,7 @@ var Moment = (function () {
     Moment.prototype._setDate = function (date) {
         date = date || Date.now();
         this.date = new Date(date);
-        if (!this.date.getTime) {
+        if (Moment.isValid(this.date)) {
             throw new Error('invalid date format');
         }
         return this;

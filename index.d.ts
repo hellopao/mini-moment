@@ -1,6 +1,7 @@
+export type DATE_TYPE = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
 
 export class Moment {
-    
+
     /**
      * Date instance of the original moment
      */
@@ -16,17 +17,17 @@ export class Moment {
     /**
      * Mutates the original moment by setting it to a unit of the incoming time
      */
-    set(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "week", value: number): Moment;
+    set(type: DATE_TYPE, value: number): Moment;
 
     /**
      * Mutates the original moment by adding time
      */
-    next(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "week", delta?: number): Moment;
+    next(type: DATE_TYPE, delta?: number): Moment;
 
     /**
      * Mutates the original moment by subtracting time
      */
-    prev(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "week", delta?: number): Moment;
+    prev(type: DATE_TYPE, delta?: number): Moment;
 
     /**
      * get time unit of the original moment
@@ -36,7 +37,7 @@ export class Moment {
     /**
      * format the original moment with format string
      */
-    format(format?: string): string;
+    format(formats?: string): string;
 
     /**
      * get the duration string between the original moment and the current time
@@ -61,17 +62,22 @@ export class Moment {
     /**
      * format the incoming date with format string
      */
-    static format(format: string, date): string;
+    static format(date: string | number, formats?: string): string;
 
     /**
      * get the day count in the month of the incoming date
      */
-    static fromNow(date): string;
+    static fromNow(date: string | number): string;
 
     /**
      * get the day count in the month of the incoming date
      */
-    static countDays(date): number
+    static countDays(date: string | number): number
+
+    /**
+     * validate a date 
+     */
+    static isValid(date?: any): boolean
 }
 
 export default Moment;
