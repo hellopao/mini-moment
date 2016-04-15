@@ -32,7 +32,7 @@ export class Moment {
     /**
      * get time unit of the original moment
      */
-    get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day"): string;
+    get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day" | "millisecond"): string;
 
     /**
      * format the original moment with format string
@@ -57,7 +57,7 @@ export class Moment {
     /**
      * get time unit of the incoming date
      */
-    static get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day", date): string;
+    static get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day" | "millisecond", date): string;
 
     /**
      * format the incoming date with format string

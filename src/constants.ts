@@ -32,6 +32,10 @@ export const DATE_TYPES = {
         get: "getSeconds",
         set: "setSeconds"
     },
+    "millisecond" : {
+        get: "getMilliSeconds",
+        set: "setMilliSeconds"
+    },
     "week" : {
         get: "getDate",
         set: "setDate"
@@ -45,5 +49,6 @@ export const FORMATS_MAP = {
     "hour": "hh",
     "minute": "mm",
     "second": "ss",
-    "day": "w"
+    "day": "w",
+    "millisecond": "SSS"
 };

@@ -1,12 +1,6 @@
 "use strict";
+var pad = require('pad-left');
 var constVlaues = require("./constants");
-var padZero = function (num) {
-    num = "" + num;
-    if (/^[0-9]$/.test(num)) {
-        return "0" + num;
-    }
-    return num;
-};
 var Moment = (function () {
     function Moment(date) {
         this._setDate(date);
@@ -93,11 +87,12 @@ var Moment = (function () {
         date = new Date(date);
         formats = formats || "yyyy-MM-dd";
         return formats.replace(/[yY]{4}/, date.getFullYear())
-            .replace(/M{2}/, padZero(date.getMonth() + 1))
-            .replace(/d{2}/, padZero(date.getDate()))
-            .replace(/h{2}/, padZero(date.getHours()))
-            .replace(/m{2}/, padZero(date.getMinutes()))
-            .replace(/s{2}/, padZero(date.getSeconds()))
+            .replace(/M{2}/, pad(date.getMonth() + 1, 2, '0'))
+            .replace(/d{2}/, pad(date.getDate(), 2, '0'))
+            .replace(/h{2}/, pad(date.getHours(), 2, '0'))
+            .replace(/m{2}/, pad(date.getMinutes(), 2, '0'))
+            .replace(/s{2}/, pad(date.getSeconds(), 2, '0'))
+            .replace(/S{3}/, pad(date.getMilliseconds(), 3, '0'))
             .replace(/w/, constVlaues.WEEKS[date.getDay()]);
     };
     /**

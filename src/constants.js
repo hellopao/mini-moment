@@ -29,6 +29,10 @@ exports.DATE_TYPES = {
         get: "getSeconds",
         set: "setSeconds"
     },
+    "millisecond": {
+        get: "getMilliSeconds",
+        set: "setMilliSeconds"
+    },
     "week": {
         get: "getDate",
         set: "setDate"
@@ -41,6 +45,7 @@ exports.FORMATS_MAP = {
     "hour": "hh",
     "minute": "mm",
     "second": "ss",
-    "day": "w"
+    "day": "w",
+    "millisecond": "SSS"
 };
 //# sourceMappingURL=constants.js.map

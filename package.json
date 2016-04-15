@@ -1,6 +1,6 @@
 {
   "name": "mini-moment",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "a datetime util",
   "license": "MIT",
   "repository": {
@@ -24,9 +24,11 @@
     "coverage": "nyc npm test && nyc report",
     "test": "ava test/moment.js -tap"
   },
-  "dependencies": {},
+  "dependencies": {
+    "pad-left": "^2.0.3"
+  },
   "homepage": "https://github.com/hellopao/mini-moment",
-  "_id": "mini-moment@0.0.4",
+  "_id": "mini-moment@0.0.5",
   "_from": "mini-moment@",
   "devDependencies": {
     "ava": "^0.13.0",

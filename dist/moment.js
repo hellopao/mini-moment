@@ -60,14 +60,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var constVlaues = __webpack_require__(1);
-	var padZero = function padZero(num) {
-	    num = "" + num;
-	    if (/^[0-9]$/.test(num)) {
-	        return "0" + num;
-	    }
-	    return num;
-	};
+	var pad = __webpack_require__(1);
+	var constVlaues = __webpack_require__(3);
 
 	var Moment = function () {
 	    function Moment(date) {
@@ -114,8 +108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "format",
 	        value: function format(formats) {
-	            formats = formats || "yyyy-MM-dd";
-	            return Moment.format(formats, this.date);
+	            return Moment.format(this.date, formats);
 	        }
 	    }, {
 	        key: "fromNow",
@@ -194,7 +187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _setDate(date) {
 	            date = date || Date.now();
 	            this.date = new Date(date);
-	            if (!this.date.getTime) {
+	            if (Moment.isValid(this.date)) {
 	                throw new Error('invalid date format');
 	            }
 	            return this;
@@ -245,16 +238,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (types.indexOf(type) === -1) {
 	                throw new Error("the argument type must be one of " + types);
 	            }
-	            return Moment.format(constVlaues.FORMATS_MAP[type], date).replace(/^0/, '');
+	            return Moment.format(date, constVlaues.FORMATS_MAP[type]).replace(/^0/, '');
 	        }
 	    }, {
 	        key: "format",
-	        value: function format(formats, date) {
-	            if (typeof formats !== "string") {
-	                throw new Error('argument formats must be a string');
-	            }
+	        value: function format(date, formats) {
 	            date = new Date(date);
-	            return formats.replace(/[yY]{4}/, date.getFullYear()).replace(/M{2}/, padZero(date.getMonth() + 1)).replace(/d{2}/, padZero(date.getDate())).replace(/h{2}/, padZero(date.getHours())).replace(/m{2}/, padZero(date.getMinutes())).replace(/s{2}/, padZero(date.getSeconds())).replace(/w/, constVlaues.WEEKS[date.getDay()]);
+	            formats = formats || "yyyy-MM-dd";
+	            return formats.replace(/[yY]{4}/, date.getFullYear()).replace(/M{2}/, pad(date.getMonth() + 1, 2, '0')).replace(/d{2}/, pad(date.getDate(), 2, '0')).replace(/h{2}/, pad(date.getHours(), 2, '0')).replace(/m{2}/, pad(date.getMinutes(), 2, '0')).replace(/s{2}/, pad(date.getSeconds(), 2, '0')).replace(/S{3}/, pad(date.getMilliseconds(), 3, '0')).replace(/w/, constVlaues.WEEKS[date.getDay()]);
+	        }
+	    }, {
+	        key: "isValid",
+	        value: function isValid(date) {
+	            return isNaN(new Date(date).getTime());
 	        }
 	    }]);
 
@@ -266,6 +262,102 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*!
+	 * pad-left <https://github.com/jonschlinkert/pad-left>
+	 *
+	 * Copyright (c) 2014-2015, Jon Schlinkert.
+	 * Licensed under the MIT license.
+	 */
+
+	'use strict';
+
+	var repeat = __webpack_require__(2);
+
+	module.exports = function padLeft(str, num, ch) {
+	  ch = typeof ch !== 'undefined' ? (ch + '') : ' ';
+	  if (typeof str !== 'string') str = str + '';
+	  return repeat(ch, num - str.length) + str;
+	};
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	/*!
+	 * repeat-string <https://github.com/jonschlinkert/repeat-string>
+	 *
+	 * Copyright (c) 2014-2015, Jon Schlinkert.
+	 * Licensed under the MIT License.
+	 */
+
+	'use strict';
+
+	/**
+	 * Results cache
+	 */
+
+	var res = '';
+	var cache;
+
+	/**
+	 * Expose `repeat`
+	 */
+
+	module.exports = repeat;
+
+	/**
+	 * Repeat the given `string` the specified `number`
+	 * of times.
+	 *
+	 * **Example:**
+	 *
+	 * ```js
+	 * var repeat = require('repeat-string');
+	 * repeat('A', 5);
+	 * //=> AAAAA
+	 * ```
+	 *
+	 * @param {String} `string` The string to repeat
+	 * @param {Number} `number` The number of times to repeat the string
+	 * @return {String} Repeated string
+	 * @api public
+	 */
+
+	function repeat(str, num) {
+	  if (typeof str !== 'string') {
+	    throw new TypeError('repeat-string expects a string.');
+	  }
+
+	  // cover common, quick use cases
+	  if (num === 1) return str;
+	  if (num === 2) return str + str;
+
+	  var max = str.length * num;
+	  if (cache !== str || typeof cache === 'undefined') {
+	    cache = str;
+	    res = '';
+	  }
+
+	  while (max > res.length && num > 0) {
+	    if (num & 1) {
+	      res += str;
+	    }
+
+	    num >>= 1;
+	    if (!num) break;
+	    str += str;
+	  }
+
+	  return res.substr(0, max);
+	}
+
+
+
+/***/ },
+/* 3 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -300,6 +392,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        get: "getSeconds",
 	        set: "setSeconds"
 	    },
+	    "millisecond": {
+	        get: "getMilliSeconds",
+	        set: "setMilliSeconds"
+	    },
 	    "week": {
 	        get: "getDate",
 	        set: "setDate"
@@ -312,7 +408,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "hour": "hh",
 	    "minute": "mm",
 	    "second": "ss",
-	    "day": "w"
+	    "day": "w",
+	    "millisecond": "SSS"
 	};
 
 /***/ }

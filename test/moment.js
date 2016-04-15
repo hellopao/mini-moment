@@ -22,6 +22,8 @@ ava_1["default"]('Moment.get', function (t) {
     t.is(now.getDate(), +_1["default"].get('date', now));
     t.is(now.getHours(), +_1["default"].get('hour', now));
     t.is(now.getMinutes(), +_1["default"].get('minute', now));
+    t.is(now.getSeconds(), +_1["default"].get('second', now));
+    t.is(now.getMilliseconds(), +_1["default"].get('millisecond', now));
 });
 ava_1["default"]('new Moment().set', function (t) {
     var now = new Date();

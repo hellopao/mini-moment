@@ -27,6 +27,8 @@ test('Moment.get', t => {
     t.is(now.getDate(), +Moment.get('date',now));
     t.is(now.getHours(), +Moment.get('hour',now));
     t.is(now.getMinutes(), +Moment.get('minute',now));
+    t.is(now.getSeconds(), +Moment.get('second',now));
+    t.is(now.getMilliseconds(), +Moment.get('millisecond',now));
 });
 
 test('new Moment().set', t => {
