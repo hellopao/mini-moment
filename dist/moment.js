@@ -259,6 +259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Moment;
+	module.exports = Moment;
 
 /***/ },
 /* 1 */

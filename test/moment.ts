@@ -2,7 +2,7 @@
 
 import test from "ava";
 
-import Moment from "../src/";
+import * as Moment from "../src/";
 
 test('Moment is not a function', t => {
     t.throws(() => Moment());

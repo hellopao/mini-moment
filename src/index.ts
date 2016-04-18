@@ -261,3 +261,4 @@ export default class Moment {
     }
 }
 
+module.exports = Moment;
