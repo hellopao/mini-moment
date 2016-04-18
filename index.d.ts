@@ -1,6 +1,6 @@
 export type DATE_TYPE = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
 
-export class Moment {
+declare class Moment {
 
     /**
      * Date instance of the original moment
@@ -80,4 +80,4 @@ export class Moment {
     static isValid(date?: any): boolean
 }
 
-export default Moment;
+export = Moment;

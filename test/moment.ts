@@ -2,7 +2,7 @@
 
 import test from "ava";
 
-import * as Moment from "../src/";
+import Moment = require("../src/");
 
 test('Moment is not a function', t => {
     t.throws(() => Moment());

@@ -6,7 +6,7 @@ import * as constVlaues from "./constants";
 type DateType = number | string | Date;
 type DateUnit = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
 
-export default class Moment {
+class Moment {
 
     date: Date;
 
@@ -261,4 +261,4 @@ export default class Moment {
     }
 }
 
-module.exports = Moment;
+export = Moment;

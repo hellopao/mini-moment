@@ -210,7 +210,5 @@ var Moment = (function () {
     };
     return Moment;
 }());
-exports.__esModule = true;
-exports["default"] = Moment;
 module.exports = Moment;
 //# sourceMappingURL=index.js.map
