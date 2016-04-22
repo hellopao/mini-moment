@@ -1,4 +1,4 @@
-export type DATE_TYPE = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
+type DATE_TYPE = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
 
 declare class Moment {
 
@@ -78,6 +78,10 @@ declare class Moment {
      * validate a date 
      */
     static isValid(date?: any): boolean
+}
+
+declare namespace Moment {
+
 }
 
 export = Moment;
