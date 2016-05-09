@@ -6,7 +6,7 @@ module.exports = {
     entry: "./src/index.ts",
     output: {
         filename: "./dist/moment.js",
-        library: "moment",
+        library: "Moment",
         libraryTarget: 'umd',
         umdNamedDefine: true
     },

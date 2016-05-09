@@ -1,7 +1,7 @@
 {
   "name": "mini-moment",
-  "version": "0.0.9",
-  "description": "a datetime util",
+  "version": "0.1.0",
+  "description": "a mini datetime util",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -16,8 +16,9 @@
   },
   "main": "./dist/moment.js",
   "keywords": [
-    "miniMoment",
+    "mini-moment",
     "date",
+    "moment",
     "time"
   ],
   "scripts": {
@@ -25,12 +26,10 @@
     "test": "ava test/moment.js -tap"
   },
   "dependencies": {
-    "pad-left": "^2.0.3"
   },
   "homepage": "https://github.com/hellopao/mini-moment",
-  "_id": "mini-moment@0.0.9",
-  "_from": "mini-moment@",
   "devDependencies": {
+    "pad-left": "^2.0.3",
     "ava": "^0.13.0",
     "babel-core": "^6.7.4",
     "babel-loader": "^6.2.4",
