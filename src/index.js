@@ -102,6 +102,13 @@ var Moment = (function () {
         return isNaN(new Date(date).getTime());
     };
     /**
+     * static func: cal delta time str from now
+     */
+    Moment.fromNow = function (date) {
+        date = new Date(date);
+        return new Moment(date).fromNow();
+    };
+    /**
      * cal delta time str from now
      */
     Moment.prototype.fromNow = function () {

@@ -72,12 +72,12 @@ declare class Moment {
     /**
      * get the day count in the month of the incoming date
      */
-    static countDays(date: string | number): number
+    static countDays(date: string | number): number;
 
     /**
      * validate a date 
      */
-    static isValid(date?: any): boolean
+    static isValid(date?: any): boolean;
 }
 
 declare namespace Moment {

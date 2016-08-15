@@ -135,6 +135,14 @@ class Moment {
     }
 
     /**
+     * static func: cal delta time str from now
+     */
+    static fromNow(date): string {
+        date = new Date(date);
+        return new Moment(date).fromNow();
+    }
+
+    /**
      * cal delta time str from now
      */
     fromNow(): string {

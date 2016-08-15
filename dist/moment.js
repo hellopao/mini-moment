@@ -252,6 +252,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function isValid(date) {
 	            return isNaN(new Date(date).getTime());
 	        }
+	    }, {
+	        key: "fromNow",
+	        value: function fromNow(date) {
+	            date = new Date(date);
+	            return new Moment(date).fromNow();
+	        }
 	    }]);
 
 	    return Moment;

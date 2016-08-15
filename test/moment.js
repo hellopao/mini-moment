@@ -58,6 +58,12 @@ test('new Moment().fromNow', t => {
     t.is('1月前', new Moment().prev('date',31).fromNow());
 });
 
+test('Moment.fromNow', t => {
+    t.is('1小时前', Moment.fromNow(new Moment().prev('hour').date.getTime()));
+    t.is('1年前', Moment.fromNow(new Moment().prev('year').date.getTime()));
+    t.is('1月前', Moment.fromNow(new Moment().prev('date',31).date.getTime()));
+});
+
 test('new Moment().startOf', t => {
     t.is('2016-03-01', new Moment('2016/3/30').startOf('month').format());
     t.is('2016-01-01', new Moment('2016/3/30').startOf('year').format());
