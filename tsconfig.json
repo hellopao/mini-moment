@@ -4,7 +4,8 @@
         "removeComments": true,
         "target": "es2015",
         "sourceMap": true,
-        "jsx": "react"
+        "jsx": "react",
+        "lib":["es2017", "dom"]
     },
     "exclude": [
         "node_modules"
