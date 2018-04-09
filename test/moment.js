@@ -1,7 +1,7 @@
 "use strict";
 
 const test = require('ava').test;
-const Moment = require("../src/");
+const Moment = require("../dist/moment");
 
 test('Moment is not a function', t => {
     t.throws(() => Moment());
