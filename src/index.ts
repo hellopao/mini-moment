@@ -1,12 +1,79 @@
 "use strict";
 
-const pad = require('pad-left');
-import * as constVlaues from "./constants";
-
 type DateType = number | string | Date;
 type DateUnit = "year" | "month" | "date" | "hour" | "second" | "minute" | "week";
 
-class Moment {
+String.prototype.padStart = String.prototype.padStart ||
+    function (maxLength, fillString) {
+        if (fillString === void 0) { fillString = ' '; }
+        if (Object.prototype.toString.call(fillString) !== "[object String]")
+            throw new TypeError('fillString must be String');
+        var str = this;
+        if (str.length >= maxLength)
+            return String(str);
+        var fillLength = maxLength - str.length, times = Math.ceil(fillLength / fillString.length);
+        while (times >>= 1) {
+            fillString += fillString;
+            if (times === 1) {
+                fillString += fillString;
+            }
+        }
+        return fillString.slice(0, fillLength) + str;
+    };
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+const HOUR = MINUTE * 60;
+const DAY = HOUR * 24;
+
+const WEEKS = ["日", "一", "二", "三", "四", "五", "六"];
+
+const DATE_TYPES = {
+    "year": {
+        get: "getFullYear",
+        set: "setFullYear"
+    },
+    "month": {
+        get: "getMonth",
+        set: "setMonth"
+    },
+    "date": {
+        get: "getDate",
+        set: "setDate"
+    },
+    "hour": {
+        get: "getHours",
+        set: "setHours"
+    },
+    "minute": {
+        get: "getMinutes",
+        set: "setMinutes"
+    },
+    "second": {
+        get: "getSeconds",
+        set: "setSeconds"
+    },
+    "millisecond": {
+        get: "getMilliSeconds",
+        set: "setMilliSeconds"
+    },
+    "week": {
+        get: "getDate",
+        set: "setDate"
+    }
+};
+
+const FORMATS_MAP = {
+    "year": "yyyy",
+    "month": "MM",
+    "date": "dd",
+    "hour": "hh",
+    "minute": "mm",
+    "second": "ss",
+    "day": "w",
+    "millisecond": "SSS"
+};
+
+export default class Moment {
 
     date: Date;
 
@@ -43,7 +110,7 @@ class Moment {
             throw new Error(`the argument value must be a number greater than or equal to 0`);
         }
 
-        const types = Object.keys(constVlaues.DATE_TYPES);
+        const types = Object.keys(DATE_TYPES);
 
         if (types.indexOf(type) === -1) {
             throw new Error(`the argument type must be one of ${types}`);
@@ -53,7 +120,7 @@ class Moment {
             throw new Error(`the argument value must be an positive integer for type ${type}`);
         }
 
-        const dtype = constVlaues.DATE_TYPES[type];
+        const dtype = DATE_TYPES[type];
 
         if (type === "week") {
             value = (value - 1) * 7;
@@ -94,20 +161,20 @@ class Moment {
         let start = new Date(stime);
         let end = start.setMonth(start.getMonth() + 1);
 
-        return (end - stime) / constVlaues.DAY;
+        return (end - stime) / DAY;
     }
 
     /**
      * static func : get datestr by type
      */
     static get(type: "year" | "month" | "date" | "hour" | "second" | "minute" | "day" | "millisecond", date): string {
-        const types = Object.keys(constVlaues.FORMATS_MAP);
+        const types = Object.keys(FORMATS_MAP);
 
         if (types.indexOf(type) === -1) {
             throw new Error(`the argument type must be one of ${types}`);
         }
 
-        return Moment.format(date, constVlaues.FORMATS_MAP[type]).replace(/^0/, '');
+        return Moment.format(date, FORMATS_MAP[type]).replace(/^0/, '');
     }
 
     /**
@@ -117,14 +184,16 @@ class Moment {
         date = new Date(date);
         formats = formats || "yyyy-MM-dd";
 
-        return formats.replace(/[yY]{4}/, date.getFullYear())
-            .replace(/M{2}/, pad(date.getMonth() + 1, 2, '0'))
-            .replace(/d{2}/, pad(date.getDate(), 2, '0'))
-            .replace(/h{2}/, pad(date.getHours(), 2, '0'))
-            .replace(/m{2}/, pad(date.getMinutes(), 2, '0'))
-            .replace(/s{2}/, pad(date.getSeconds(), 2, '0'))
-            .replace(/S{3}/, pad(date.getMilliseconds(), 3, '0'))
-            .replace(/w/, constVlaues.WEEKS[date.getDay()])
+        var d = new Date(date);
+        formats = formats || "yyyy-MM-dd";
+        return formats.replace(/[yY]{4}/, d.getFullYear().toString())
+            .replace(/M{2}/, (d.getMonth() + 1).toString().padStart(2, '0'))
+            .replace(/d{2}/, d.getDate().toString().padStart(2, '0'))
+            .replace(/h{2}/, d.getHours().toString().padStart(2, '0'))
+            .replace(/m{2}/, d.getMinutes().toString().padStart(2, '0'))
+            .replace(/s{2}/, d.getSeconds().toString().padStart(2, '0'))
+            .replace(/S{3}/, d.getMilliseconds().toString().padStart(3, '0'))
+            .replace(/w/, WEEKS[d.getDay()]);
     }
 
     /**
@@ -151,32 +220,32 @@ class Moment {
         let deltaStr = delta > 0 ? "前" : "后";
         delta = Math.abs(delta);
 
-        const year = Math.floor(delta / (constVlaues.DAY * 365));
+        const year = Math.floor(delta / (DAY * 365));
         if (year >= 1 && now.getFullYear() !== this.date.getFullYear()) {
             return `${year}年${deltaStr}`;
         }
 
-        const month = Math.floor(delta / (constVlaues.DAY * 30));
+        const month = Math.floor(delta / (DAY * 30));
         if (month >= 1 && now.getMonth() !== this.date.getMonth()) {
             return `${month}月${deltaStr}`;
         }
 
-        const day = Math.floor(delta / constVlaues.DAY);
+        const day = Math.floor(delta / DAY);
         if (day >= 1) {
             return `${day}天${deltaStr}`;
         }
 
-        const hour = Math.floor(delta * 24 / constVlaues.DAY);
+        const hour = Math.floor(delta * 24 / DAY);
         if (hour >= 1) {
             return `${hour}小时${deltaStr}`;
         }
 
-        const minute = Math.floor(delta * 24 * 60 / constVlaues.DAY);
+        const minute = Math.floor(delta * 24 * 60 / DAY);
         if (minute >= 1) {
             return `${minute}分钟${deltaStr}`;
         }
 
-        const second = delta * 24 * 60 * 60 / constVlaues.DAY;
+        const second = delta * 24 * 60 * 60 / DAY;
         if (second >= 1) {
             return `${second}秒${deltaStr}`;
         }
@@ -245,13 +314,13 @@ class Moment {
     }
 
     _adjacent(type: string, delta: number) {
-        const types = Object.keys(constVlaues.DATE_TYPES);
+        const types = Object.keys(DATE_TYPES);
 
         if (types.indexOf(type) === -1) {
             throw new Error(`the argument type must be one of ${types}`);
         }
 
-        const dtype = constVlaues.DATE_TYPES[type];
+        const dtype = DATE_TYPES[type];
 
         if (type === "week") {
             delta *= 7;
@@ -269,4 +338,4 @@ class Moment {
     }
 }
 
-export = Moment;
+export const version = "1.0.0";
