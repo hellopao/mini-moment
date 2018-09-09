@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.Moment = {})));
-}(this, (function (exports) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.Moment = factory());
+}(this, (function () { 'use strict';
 
 String.prototype.padStart = String.prototype.padStart ||
     function (maxLength, fillString) {
@@ -23,12 +23,12 @@ String.prototype.padStart = String.prototype.padStart ||
         }
         return fillString.slice(0, fillLength) + str;
     };
-const SECOND = 1000;
-const MINUTE = SECOND * 60;
-const HOUR = MINUTE * 60;
-const DAY = HOUR * 24;
-const WEEKS = ["日", "一", "二", "三", "四", "五", "六"];
-const DATE_TYPES = {
+var SECOND = 1000;
+var MINUTE = SECOND * 60;
+var HOUR = MINUTE * 60;
+var DAY = HOUR * 24;
+var WEEKS = ["日", "一", "二", "三", "四", "五", "六"];
+var DATE_TYPES = {
     "year": {
         get: "getFullYear",
         set: "setFullYear"
@@ -62,7 +62,7 @@ const DATE_TYPES = {
         set: "setDate"
     }
 };
-const FORMATS_MAP = {
+var FORMATS_MAP = {
     "year": "yyyy",
     "month": "MM",
     "date": "dd",
@@ -72,62 +72,62 @@ const FORMATS_MAP = {
     "day": "w",
     "millisecond": "SSS"
 };
-class Moment {
-    constructor(date) {
+var Moment = (function () {
+    function Moment(date) {
         this._setDate(date);
     }
-    isToday() {
+    Moment.prototype.isToday = function () {
         return Moment.isToday(this.date);
-    }
-    countDays() {
+    };
+    Moment.prototype.countDays = function () {
         return Moment.countDays(this.date);
-    }
-    get(type) {
+    };
+    Moment.prototype.get = function (type) {
         return Moment.get(type, this.date);
-    }
-    set(type, value) {
+    };
+    Moment.prototype.set = function (type, value) {
         if (value < 0 || Math.ceil(value) !== value) {
-            throw new Error(`the argument value must be a number greater than or equal to 0`);
+            throw new Error("the argument value must be a number greater than or equal to 0");
         }
-        const types = Object.keys(DATE_TYPES);
+        var types = Object.keys(DATE_TYPES);
         if (types.indexOf(type) === -1) {
-            throw new Error(`the argument type must be one of ${types}`);
+            throw new Error("the argument type must be one of " + types);
         }
         if (["year", "month", "week", "date"].indexOf(type) > -1 && value === 0) {
-            throw new Error(`the argument value must be an positive integer for type ${type}`);
+            throw new Error("the argument value must be an positive integer for type " + type);
         }
-        const dtype = DATE_TYPES[type];
+        var dtype = DATE_TYPES[type];
         if (type === "week") {
             value = (value - 1) * 7;
         }
         this._setDate(this.date[dtype['set']](value));
         return this;
-    }
-    format(formats) {
+    };
+    Moment.prototype.format = function (formats) {
         return Moment.format(this.date, formats);
-    }
-    static isToday(date) {
+    };
+    Moment.isToday = function (date) {
         date = new Date(date);
-        const now = new Date();
+        var now = new Date();
         return date.getFullYear() === now.getFullYear()
             && date.getMonth() === now.getMonth()
             && date.getDate() === now.getDate();
-    }
-    static countDays(date) {
+    };
+    Moment.countDays = function (date) {
         date = new Date(date);
-        let stime = new Date(date.getTime()).setDate(1);
-        let start = new Date(stime);
-        let end = start.setMonth(start.getMonth() + 1);
+        var stime = new Date(date.getTime()).setDate(1);
+        var start = new Date(stime);
+        var end = start.setMonth(start.getMonth() + 1);
         return (end - stime) / DAY;
-    }
-    static get(type, date) {
-        const types = Object.keys(FORMATS_MAP);
+    };
+    Moment.get = function (type, date) {
+        var types = Object.keys(FORMATS_MAP);
         if (types.indexOf(type) === -1) {
-            throw new Error(`the argument type must be one of ${types}`);
+            throw new Error("the argument type must be one of " + types);
         }
         return Moment.format(date, FORMATS_MAP[type]).replace(/^0/, '');
-    }
-    static format(date, formats) {
+    };
+    Moment.format = function (date, formats) {
         date = new Date(date);
         formats = formats || "yyyy-MM-dd";
         var d = new Date(date);
@@ -140,61 +140,61 @@ class Moment {
             .replace(/s{2}/, d.getSeconds().toString().padStart(2, '0'))
             .replace(/S{3}/, d.getMilliseconds().toString().padStart(3, '0'))
             .replace(/w/, WEEKS[d.getDay()]);
-    }
-    static isValid(date) {
+    };
+    Moment.isValid = function (date) {
         return isNaN(new Date(date).getTime());
-    }
-    static fromNow(date) {
+    };
+    Moment.fromNow = function (date) {
         date = new Date(date);
         return new Moment(date).fromNow();
-    }
-    fromNow() {
-        let now = new Date();
-        let delta = now.getTime() - this.date.getTime();
-        let deltaStr = delta > 0 ? "前" : "后";
+    };
+    Moment.prototype.fromNow = function () {
+        var now = new Date();
+        var delta = now.getTime() - this.date.getTime();
+        var deltaStr = delta > 0 ? "前" : "后";
         delta = Math.abs(delta);
-        const year = Math.floor(delta / (DAY * 365));
+        var year = Math.floor(delta / (DAY * 365));
         if (year >= 1 && now.getFullYear() !== this.date.getFullYear()) {
-            return `${year}年${deltaStr}`;
+            return year + "\u5E74" + deltaStr;
         }
-        const month = Math.floor(delta / (DAY * 30));
+        var month = Math.floor(delta / (DAY * 30));
         if (month >= 1 && now.getMonth() !== this.date.getMonth()) {
-            return `${month}月${deltaStr}`;
+            return month + "\u6708" + deltaStr;
         }
-        const day = Math.floor(delta / DAY);
+        var day = Math.floor(delta / DAY);
         if (day >= 1) {
-            return `${day}天${deltaStr}`;
+            return day + "\u5929" + deltaStr;
         }
-        const hour = Math.floor(delta * 24 / DAY);
+        var hour = Math.floor(delta * 24 / DAY);
         if (hour >= 1) {
-            return `${hour}小时${deltaStr}`;
+            return hour + "\u5C0F\u65F6" + deltaStr;
         }
-        const minute = Math.floor(delta * 24 * 60 / DAY);
+        var minute = Math.floor(delta * 24 * 60 / DAY);
         if (minute >= 1) {
-            return `${minute}分钟${deltaStr}`;
+            return minute + "\u5206\u949F" + deltaStr;
         }
-        const second = delta * 24 * 60 * 60 / DAY;
+        var second = delta * 24 * 60 * 60 / DAY;
         if (second >= 1) {
-            return `${second}秒${deltaStr}`;
+            return second + "\u79D2" + deltaStr;
         }
-    }
-    next(type, delta) {
+    };
+    Moment.prototype.next = function (type, delta) {
         delta = delta || 1;
         if (typeof delta !== "number") {
             throw new Error('argument delta must be a number');
         }
         this._adjacent(type, delta);
         return this;
-    }
-    prev(type, delta) {
+    };
+    Moment.prototype.prev = function (type, delta) {
         delta = delta || 1;
         if (typeof delta !== "number") {
             throw new Error('argument delta must be a number');
         }
         this._adjacent(type, -1 * delta);
         return this;
-    }
-    startOf(type) {
+    };
+    Moment.prototype.startOf = function (type) {
         if (type === "year") {
             this._setDate(this.format('yyyy/01/01'));
         }
@@ -202,7 +202,7 @@ class Moment {
             this._setDate(this.format('yyyy/MM/01'));
         }
         else if (type === "season") {
-            this._setDate(this.format(`yyyy/${Math.floor((+this.get('month') - 1) / 3) * 3 + 1}/01`));
+            this._setDate(this.format("yyyy/" + (Math.floor((+this.get('month') - 1) / 3) * 3 + 1) + "/01"));
         }
         else if (type === "week") {
             this._setDate(this.prev("date", +this.get('day')).format('yyyy/MM/dd'));
@@ -217,38 +217,35 @@ class Moment {
             this._setDate(this.format('yyyy/MM/dd hh:mm:00'));
         }
         return this;
-    }
-    _setDate(date) {
+    };
+    Moment.prototype._setDate = function (date) {
         date = date || Date.now();
         this.date = new Date(date);
         if (Moment.isValid(this.date)) {
             throw new Error('invalid date format');
         }
         return this;
-    }
-    _adjacent(type, delta) {
-        const types = Object.keys(DATE_TYPES);
+    };
+    Moment.prototype._adjacent = function (type, delta) {
+        var types = Object.keys(DATE_TYPES);
         if (types.indexOf(type) === -1) {
-            throw new Error(`the argument type must be one of ${types}`);
+            throw new Error("the argument type must be one of " + types);
         }
-        const dtype = DATE_TYPES[type];
+        var dtype = DATE_TYPES[type];
         if (type === "week") {
             delta *= 7;
         }
         this._setDate(this.date[dtype['set']](this.date[dtype['get']]() + delta));
-    }
-    valueOf() {
+    };
+    Moment.prototype.valueOf = function () {
         return +this.date;
-    }
-    toString() {
+    };
+    Moment.prototype.toString = function () {
         return this.date.toString();
-    }
-}
-const version = "1.0.0";
+    };
+    return Moment;
+}());
 
-exports['default'] = Moment;
-exports.version = version;
-
-Object.defineProperty(exports, '__esModule', { value: true });
+return Moment;
 
 })));

@@ -26,8 +26,7 @@
     "test": "ava test/moment.js -tap",
     "build": "node node_modules/rollup/bin/rollup -c"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "homepage": "https://github.com/hellopao/mini-moment",
   "devDependencies": {
     "ava": "^0.13.0",
